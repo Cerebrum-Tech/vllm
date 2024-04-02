@@ -5,7 +5,7 @@
 FROM nvidia/cuda:12.1.0-devel-ubuntu22.04 AS dev
 
 RUN apt-get update -y \
-    && apt-get install -y python3-pip git
+    && apt-get install -y python3-pip git curl
 
 # Workaround for https://github.com/openai/triton/issues/2507 and
 # https://github.com/pytorch/pytorch/issues/107960 -- hopefully
@@ -82,7 +82,7 @@ FROM nvidia/cuda:12.1.0-runtime-ubuntu22.04 AS vllm-base
 
 # libnccl required for ray
 RUN apt-get update -y \
-    && apt-get install -y python3-pip
+    && apt-get install -y python3-pip curl
 
 WORKDIR /workspace
 COPY requirements.txt requirements.txt
@@ -97,6 +97,9 @@ FROM vllm-base AS vllm-openai
 # install additional dependencies for openai api server
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install accelerate
+
+RUN apt-get update -y \
+    && apt-get install -y curl
 
 COPY --from=build /workspace/vllm/*.so /workspace/vllm/
 COPY vllm vllm
