@@ -1,8 +1,8 @@
-import torch
 import math
-import pytest
-
 from unittest.mock import MagicMock
+
+import pytest
+import torch
 
 from vllm.spec_decode.metrics import AsyncMetricsCollector
 
@@ -150,8 +150,10 @@ def test_initial_metrics_has_correct_values(has_data: bool):
     assert metrics.emitted_tokens == num_emitted_tokens
 
     if has_data:
-        assert metrics.draft_acceptance_rate == num_accepted_tokens / num_draft_tokens
-        assert metrics.system_efficiency == num_emitted_tokens / num_possible_tokens
+        assert (metrics.draft_acceptance_rate == num_accepted_tokens /
+                num_draft_tokens)
+        assert (metrics.system_efficiency == num_emitted_tokens /
+                num_possible_tokens)
     else:
         assert math.isnan(metrics.draft_acceptance_rate)
         assert math.isnan(metrics.system_efficiency)
